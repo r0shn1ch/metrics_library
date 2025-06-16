@@ -5,6 +5,8 @@
 #include <string>
 #include <variant>
 #include <memory>
+#include <map>
+
 namespace Metrics {
 using Value = std::variant<int, double, std::string>;
 
@@ -24,6 +26,7 @@ public:
     void addValue(const std::string& name, const Value& value) override;
     void flush() override;
     std::string getTimestamp() const;
+    std::map<std::string, Value> metrics;
 
 private:
     std::ofstream outputFile;

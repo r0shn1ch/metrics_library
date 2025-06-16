@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
+#include <mutex>
 
 namespace Metrics {
 
@@ -35,15 +36,26 @@ std::string FileCollector::getTimestamp() const {
 }
 
 void FileCollector::registerMetric(const std::string& name) {
-    // TODO: Implement metric registration.
+    // TODO: Implement registration logic.
 }
 
 void FileCollector::addValue(const std::string& name, const Value& value) {
-    // TODO: Implement adding a value to a metric.
+    // TODO: Add locking for thread safety.
+    metrics[name] = value;
 }
 
 void FileCollector::flush() {
-    // TODO: Implement flushing metrics to the file.
+    // TODO: Add locking for thread safety.
+    std::ostringstream line;
+    line << getTimestamp() << " ";
+
+    for (const auto& [name, value] : metrics) {
+        line << "\"" << name << "\" ";
+        std::visit([&line](auto&& arg) { line << arg << " "; }, value);
+    }
+
+    outputFile << line.str() << std::endl;
+    metrics.clear();
 }
 
 std::unique_ptr<Collector> CreateFileCollector(const std::string& filename) {
