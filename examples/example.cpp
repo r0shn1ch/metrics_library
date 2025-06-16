@@ -1,6 +1,5 @@
 #include "../include/MetricsCollector.h"
 #include <chrono>
-#include <iostream>
 #include <random>
 #include <thread>
 

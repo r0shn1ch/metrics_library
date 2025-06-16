@@ -8,7 +8,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(metrics_collector
   src/MetricsCollector.cpp
   include/MetricsCollector.h
-  examples/example.cpp
 )
 
 target_include_directories(metrics_collector PUBLIC

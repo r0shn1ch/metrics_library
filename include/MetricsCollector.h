@@ -1,16 +1,19 @@
 #ifndef METRICSCOLLECTOR_H
 #define METRICSCOLLECTOR_H
 
+#include <chrono>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <memory>
 #include <mutex>
+#include <sstream>
 #include <string>
 #include <variant>
-#include <memory>
-#include <map>
 
 namespace Metrics {
 using Value = std::variant<int, double, std::string>;
-
 
 class Collector {
 public:
@@ -27,16 +30,30 @@ public:
     void registerMetric(const std::string& name) override;
     void addValue(const std::string& name, const Value& value) override;
     void flush() override;
-    std::string getTimestamp() const;
-    std::map<std::string, Value> metrics;
 
 private:
+    std::string getTimestamp() const;
+
     std::ofstream outputFile;
     std::string filename;
+    std::map<std::string, Value> metrics;
     std::mutex mutex;
 };
 
 std::unique_ptr<Collector> CreateFileCollector(const std::string& filename);
+
+// Usage
+inline void RegisterMetric(Collector& collector, const std::string& name) {
+    collector.registerMetric(name);
+}
+
+inline void AddMetricValue(Collector& collector, const std::string& name,
+                           const Value& value) {
+    collector.addValue(name, value);
+}
+
+inline void FlushMetrics(Collector& collector) { collector.flush(); }
+
 }  // namespace Metrics
 
 #endif
