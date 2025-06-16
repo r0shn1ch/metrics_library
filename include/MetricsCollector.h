@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include <variant>
-
+#include <memory>
 namespace Metrics {
 using Value = std::variant<int, double, std::string>;
 
@@ -23,6 +23,7 @@ public:
     void registerMetric(const std::string& name) override;
     void addValue(const std::string& name, const Value& value) override;
     void flush() override;
+    std::string getTimestamp() const;
 
 private:
     std::ofstream outputFile;
