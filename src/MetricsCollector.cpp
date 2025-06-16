@@ -6,11 +6,9 @@
 #include <mutex>
 
 namespace Metrics {
-
 FileCollector::FileCollector(const std::string& filename) : filename(filename) {
     outputFile.open(filename, std::ios::app);
     if (!outputFile.is_open()) {
-        // TODO: Consider using a more robust error handling strategy.
         throw std::runtime_error("Cannot open output file: " + filename);
     }
 }
@@ -36,24 +34,22 @@ std::string FileCollector::getTimestamp() const {
 }
 
 void FileCollector::registerMetric(const std::string& name) {
-    // TODO: Implement registration logic.
+    // TODO: Consider if registration is really needed.
 }
 
 void FileCollector::addValue(const std::string& name, const Value& value) {
-    // TODO: Add locking for thread safety.
+    std::lock_guard<std::mutex> lock(mutex);
     metrics[name] = value;
 }
 
 void FileCollector::flush() {
-    // TODO: Add locking for thread safety.
+    std::lock_guard<std::mutex> lock(mutex);
     std::ostringstream line;
     line << getTimestamp() << " ";
-
     for (const auto& [name, value] : metrics) {
         line << "\"" << name << "\" ";
         std::visit([&line](auto&& arg) { line << arg << " "; }, value);
     }
-
     outputFile << line.str() << std::endl;
     metrics.clear();
 }

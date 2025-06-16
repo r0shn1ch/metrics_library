@@ -2,6 +2,7 @@
 #define METRICSCOLLECTOR_H
 
 #include <fstream>
+#include <mutex>
 #include <string>
 #include <variant>
 #include <memory>
@@ -9,6 +10,7 @@
 
 namespace Metrics {
 using Value = std::variant<int, double, std::string>;
+
 
 class Collector {
 public:
@@ -31,6 +33,7 @@ public:
 private:
     std::ofstream outputFile;
     std::string filename;
+    std::mutex mutex;
 };
 
 std::unique_ptr<Collector> CreateFileCollector(const std::string& filename);
